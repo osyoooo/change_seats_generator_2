@@ -58,14 +58,6 @@ else:
                 st.session_state.current_student = None
                 st.rerun()
 
-    # ✅ 未抽選の出席番号一覧を表示
-    if st.session_state.remaining_ids:
-        st.subheader("📋 未抽選の出席番号")
-        st.markdown(
-            ", ".join(str(sid) for sid in sorted(st.session_state.remaining_ids)),
-            help="まだ席が決まっていない生徒の出席番号です。"
-        )
-
     # 座席表の表示
     st.subheader("🪑 現在の座席表")
 
@@ -83,8 +75,16 @@ else:
     table_html += "</table>"
     st.markdown(table_html, unsafe_allow_html=True)
 
-    # リセットボタン
+    # 🔁 リセットボタン
     if st.button("🔁 リセットしてやり直す"):
         for key in list(st.session_state.keys()):
             del st.session_state[key]
         st.rerun()
+
+    # ⏳ リセットボタンの下に未抽選一覧を表示
+    if st.session_state.remaining_ids:
+        st.subheader("📋 未抽選の出席番号")
+        st.markdown(
+            ", ".join(str(sid) for sid in sorted(st.session_state.remaining_ids)),
+            help="まだ席が決まっていない生徒の出席番号です。"
+        )
