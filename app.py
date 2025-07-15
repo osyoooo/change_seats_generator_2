@@ -13,7 +13,7 @@ if "initialized" not in st.session_state:
     st.session_state.current_student = None
     st.session_state.current_seat = None
 
-# 初期設定（フォーム）
+# 初期設定フォーム
 if not st.session_state.initialized:
     with st.form("setup_form"):
         max_id = st.number_input("🧑‍🎓 出席番号の最大値", 1, 100, 40)
@@ -37,10 +37,10 @@ if not st.session_state.initialized:
 else:
     st.subheader("👤 現在の状態")
 
+    # Step 1: 抽選（出席番号のみ）
     if not st.session_state.remaining_ids:
         st.success("🎉 全員の席が決まりました！")
     else:
-        # Step 1: 出席番号の抽選
         if st.session_state.current_student is None:
             if st.button("🎲 出席番号をランダムに抽選"):
                 sid = random.choice(st.session_state.remaining_ids)
@@ -49,7 +49,6 @@ else:
         else:
             st.info(f"✅ {st.session_state.current_student} 番さんが選ばれました")
 
-            # Step 2: 座席決定（ボタン押下）
             if st.button("📍 空いている席をランダムに割り当て"):
                 seat = random.choice(st.session_state.remaining_seats)
                 st.session_state.assigned[st.session_state.current_student] = seat
@@ -59,6 +58,14 @@ else:
                 st.session_state.current_student = None
                 st.rerun()
 
+    # ✅ 未抽選の出席番号一覧を表示
+    if st.session_state.remaining_ids:
+        st.subheader("📋 未抽選の出席番号")
+        st.markdown(
+            ", ".join(str(sid) for sid in sorted(st.session_state.remaining_ids)),
+            help="まだ席が決まっていない生徒の出席番号です。"
+        )
+
     # 座席表の表示
     st.subheader("🪑 現在の座席表")
 
@@ -67,7 +74,6 @@ else:
         icon = "🧑‍🎓" if sid % 2 == 1 else "👩‍🎓"
         seat_grid[r][c] = f"{icon}{sid}"
 
-    # 表形式で表示
     table_html = "<table style='border-collapse: collapse;'>"
     for row in seat_grid:
         table_html += "<tr>"
@@ -75,10 +81,9 @@ else:
             table_html += f"<td style='border: 1px solid gray; padding: 8px; text-align: center; width: 50px; height: 50px;'>{cell or ' '}</td>"
         table_html += "</tr>"
     table_html += "</table>"
-
     st.markdown(table_html, unsafe_allow_html=True)
 
-    # リセット
+    # リセットボタン
     if st.button("🔁 リセットしてやり直す"):
         for key in list(st.session_state.keys()):
             del st.session_state[key]
