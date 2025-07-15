@@ -35,7 +35,7 @@ if not st.session_state.initialized:
                 st.rerun()
 
 else:
-    st.subheader("👤 現在の状態")
+    st.subheader("🎲 出席番号の抽選")
 
     # Step 1: 抽選（出席番号のみ）
     if not st.session_state.remaining_ids:
@@ -81,7 +81,7 @@ else:
             del st.session_state[key]
         st.rerun()
 
-    # ⏳ リセットボタンの下に未抽選一覧を表示
+    # 📋 未抽選出席番号（リセットボタンの下）
     if st.session_state.remaining_ids:
         st.subheader("📋 未抽選の出席番号")
         st.markdown(
